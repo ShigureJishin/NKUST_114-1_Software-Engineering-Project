@@ -10,6 +10,13 @@
 
 ---
 
+
+## 資料來源
+
+- [台灣證券交易所公開 API](https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL)
+
+---
+
 ## 專案結構
 
 - `ConsoleApp1/Program.cs`：主程式，負責讀取 JSON、反序列化並顯示資料。
