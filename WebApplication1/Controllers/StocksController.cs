@@ -104,5 +104,76 @@ namespace WebApplication1.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Stocks/Edit/5
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var stock = await _db.Stocks.FindAsync(id.Value);
+            if (stock == null) return NotFound();
+
+            return View(stock);
+        }
+
+        // POST: Stocks/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StockCode,StockName,StockDate,TradeVolume,TradeValue,OpeningPrice,HighestPrice,LowestPrice,ClosingPrice,Change,Transaction,CreatedAt")] Stock stock)
+        {
+            if (id != stock.Id)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(stock);
+            }
+
+            var entity = await _db.Stocks.FindAsync(id);
+            if (entity == null) return NotFound();
+
+            // update fields
+            entity.StockCode = stock.StockCode;
+            entity.StockName = stock.StockName;
+            entity.StockDate = stock.StockDate;
+            entity.TradeVolume = stock.TradeVolume;
+            entity.TradeValue = stock.TradeValue;
+            entity.OpeningPrice = stock.OpeningPrice;
+            entity.HighestPrice = stock.HighestPrice;
+            entity.LowestPrice = stock.LowestPrice;
+            entity.ClosingPrice = stock.ClosingPrice;
+            entity.Change = stock.Change;
+            entity.Transaction = stock.Transaction;
+            entity.CreatedAt = stock.CreatedAt;
+
+            try
+            {
+                _db.Update(entity);
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StockExists(stock.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Details), new { id = stock.Id });
+        }
+
+        private bool StockExists(int id)
+        {
+            return _db.Stocks.Any(e => e.Id == id);
+        }
     }
 }
