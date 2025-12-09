@@ -44,5 +44,9 @@
         </dl>
 
         <a class="btn btn-secondary" asp-action="Index">Back to list</a>
+        <form asp-action="Delete" method="post" class="d-inline ms-2">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger" onclick="return confirm('確定要刪除這筆資料嗎？');">Delete</button>
+        </form>
     </div>
 </div>
