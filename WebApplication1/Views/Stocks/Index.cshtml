@@ -74,11 +74,11 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="Id" asp-route-sortDir="@idToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Id@idIndicator</a></th>
-            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="StockCode" asp-route-sortDir="@codeToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Symbol@codeIndicator</a></th>
-            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="StockName" asp-route-sortDir="@nameToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Name@nameIndicator</a></th>
-            <th class="text-end"><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="ClosingPrice" asp-route-sortDir="@priceToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Price@priceIndicator</a></th>
-            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="CreatedAt" asp-route-sortDir="@updatedToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">UpdatedAt@updatedIndicator</a></th>
+            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="Id" asp-route-sortDir="@idToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Id@(idIndicator)</a></th>
+            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="StockCode" asp-route-sortDir="@codeToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Symbol@(codeIndicator)</a></th>
+            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="StockName" asp-route-sortDir="@nameToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Name@(nameIndicator)</a></th>
+            <th class="text-end"><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="ClosingPrice" asp-route-sortDir="@priceToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Price@(priceIndicator)</a></th>
+            <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="CreatedAt" asp-route-sortDir="@updatedToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">UpdatedAt@(updatedIndicator)</a></th>
             <th></th>
         </tr>
     </thead>
