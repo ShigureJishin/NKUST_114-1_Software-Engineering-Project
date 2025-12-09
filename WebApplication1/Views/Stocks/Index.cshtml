@@ -18,7 +18,6 @@
         }
         return string.Empty;
     }
-<<<<<<< HEAD
 
     var idToggle = ToggleDir("Id");
     var idIndicator = SortIndicator("Id");
@@ -30,8 +29,6 @@
     var priceIndicator = SortIndicator("ClosingPrice");
     var updatedToggle = ToggleDir("CreatedAt");
     var updatedIndicator = SortIndicator("CreatedAt");
-=======
->>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
 }
 
 <h1>Stocks</h1>
@@ -76,19 +73,11 @@
 <table class="table table-striped">
     <thead>
         <tr>
-<<<<<<< HEAD
             <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="Id" asp-route-sortDir="@idToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Id@idIndicator</a></th>
             <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="StockCode" asp-route-sortDir="@codeToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Symbol@codeIndicator</a></th>
             <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="StockName" asp-route-sortDir="@nameToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Name@nameIndicator</a></th>
             <th class="text-end"><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="ClosingPrice" asp-route-sortDir="@priceToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Price@priceIndicator</a></th>
             <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="CreatedAt" asp-route-sortDir="@updatedToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">UpdatedAt@updatedIndicator</a></th>
-=======
-            <th><a href="?page=1&pageSize=@Model.PageSize&sort=Id&sortDir=@ToggleDir("Id")">Id</a></th>
-            <th><a href="?page=1&pageSize=@Model.PageSize&sort=StockCode&sortDir=@ToggleDir("StockCode")">Symbol</a></th>
-            <th><a href="?page=1&pageSize=@Model.PageSize&sort=StockName&sortDir=@ToggleDir("StockName")">Name</a></th>
-            <th class="text-end"><a href="?page=1&pageSize=@Model.PageSize&sort=ClosingPrice&sortDir=@ToggleDir("ClosingPrice")">Price</a></th>
-            <th><a href="?page=1&pageSize=@Model.PageSize&sort=CreatedAt&sortDir=@ToggleDir("CreatedAt")">UpdatedAt</a></th>
->>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
         </tr>
     </thead>
     <tbody>
@@ -110,29 +99,17 @@
     <nav>
         <ul class="pagination mb-0">
             <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-<<<<<<< HEAD
                 <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page - 1)" asp-route-pageSize="@Model.PageSize" asp-route-sort="@Model.Sort" asp-route-sortDir="@Model.SortDir" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Previous</a>
-=======
-                <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&sort=@Model.Sort&sortDir=@Model.SortDir">Previous</a>
->>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
             </li>
 @{
     var totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
     for (int i = 1; i <= totalPages; i++)
     {
-<<<<<<< HEAD
         <li class="page-item @(i == Model.Page ? "active" : "")"><a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@Model.PageSize" asp-route-sort="@Model.Sort" asp-route-sortDir="@Model.SortDir" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">@i</a></li>
     }
 }
             <li class="page-item @(Model.Page >= (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize) ? "disabled" : "")">
                 <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page + 1)" asp-route-pageSize="@Model.PageSize" asp-route-sort="@Model.Sort" asp-route-sortDir="@Model.SortDir" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Next</a>
-=======
-        <li class="page-item @(i == Model.Page ? "active" : "")"><a class="page-link" href="?page=@i&pageSize=@Model.PageSize&sort=@Model.Sort&sortDir=@Model.SortDir">@i</a></li>
-    }
-}
-            <li class="page-item @(Model.Page >= (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize) ? "disabled" : "")">
-                <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&sort=@Model.Sort&sortDir=@Model.SortDir">Next</a>
->>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
             </li>
         </ul>
     </nav>

@@ -10,7 +10,6 @@ namespace WebApplication1.Models
         public int TotalCount { get; set; }
         public string Sort { get; set; }
         public string SortDir { get; set; }
-<<<<<<< HEAD
 
         // Search inputs
         public string SearchCode { get; set; }
@@ -27,7 +26,5 @@ namespace WebApplication1.Models
         // New: single field selection and term input
         public string SearchField { get; set; } // "StockCode" or "StockName"
         public string SearchTerm { get; set; }
-=======
->>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
     }
 }
