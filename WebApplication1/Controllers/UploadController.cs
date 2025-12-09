@@ -6,9 +6,11 @@ using System.IO;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UploadController : Controller
     {
         [HttpGet]
