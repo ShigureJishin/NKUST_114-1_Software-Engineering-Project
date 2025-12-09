@@ -419,3 +419,6 @@ FodyWeavers.xsd
 
 # 忽略所有 .json 檔案
 *.json
+
+# 忽略 Admin.txt 檔案
+Admin.txt
