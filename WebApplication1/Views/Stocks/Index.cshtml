@@ -2,6 +2,22 @@
 
 @{
     ViewData["Title"] = "Stocks";
+    string ToggleDir(string col)
+    {
+        if (Model.Sort == col)
+        {
+            return Model.SortDir == "asc" ? "desc" : "asc";
+        }
+        return "asc";
+    }
+    string SortIndicator(string col)
+    {
+        if (Model.Sort == col)
+        {
+            return Model.SortDir == "asc" ? " ¡ô" : " ¡õ";
+        }
+        return string.Empty;
+    }
 }
 
 <h1>Stocks</h1>
@@ -9,11 +25,11 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>Symbol</th>
-            <th>Name</th>
-            <th class="text-end">Price</th>
-            <th>Updated</th>
+            <th><a href="?page=1&pageSize=@Model.PageSize&sort=Id&sortDir=@ToggleDir("Id")">Id</a></th>
+            <th><a href="?page=1&pageSize=@Model.PageSize&sort=StockCode&sortDir=@ToggleDir("StockCode")">Symbol</a></th>
+            <th><a href="?page=1&pageSize=@Model.PageSize&sort=StockName&sortDir=@ToggleDir("StockName")">Name</a></th>
+            <th class="text-end"><a href="?page=1&pageSize=@Model.PageSize&sort=ClosingPrice&sortDir=@ToggleDir("ClosingPrice")">Price</a></th>
+            <th><a href="?page=1&pageSize=@Model.PageSize&sort=CreatedAt&sortDir=@ToggleDir("CreatedAt")">UpdatedAt</a></th>
         </tr>
     </thead>
     <tbody>
@@ -35,17 +51,17 @@
     <nav>
         <ul class="pagination mb-0">
             <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-                <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize">Previous</a>
+                <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&sort=@Model.Sort&sortDir=@Model.SortDir">Previous</a>
             </li>
 @{
     var totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
     for (int i = 1; i <= totalPages; i++)
     {
-        <li class="page-item @(i == Model.Page ? "active" : "")"><a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a></li>
+        <li class="page-item @(i == Model.Page ? "active" : "")"><a class="page-link" href="?page=@i&pageSize=@Model.PageSize&sort=@Model.Sort&sortDir=@Model.SortDir">@i</a></li>
     }
 }
             <li class="page-item @(Model.Page >= (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize) ? "disabled" : "")">
-                <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize">Next</a>
+                <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&sort=@Model.Sort&sortDir=@Model.SortDir">Next</a>
             </li>
         </ul>
     </nav>
