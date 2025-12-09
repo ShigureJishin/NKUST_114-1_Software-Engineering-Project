@@ -1,5 +1,8 @@
 ﻿@model WebApplication1.Models.Stock
 
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+
 @{
     ViewData["Title"] = "Stock Details";
 }
@@ -44,9 +47,14 @@
         </dl>
 
         <a class="btn btn-secondary" asp-action="Index">Back to list</a>
-        <form asp-action="Delete" method="post" class="d-inline ms-2">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger" onclick="return confirm('確定要刪除這筆資料嗎？');">Delete</button>
-        </form>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <form asp-action="Delete" method="post" class="d-inline ms-2">
+                <input type="hidden" name="id" value="@Model.Id" />
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger" onclick="return confirm('確定要刪除這筆資料嗎？');">Delete</button>
+            </form>
+        }
     </div>
 </div>
