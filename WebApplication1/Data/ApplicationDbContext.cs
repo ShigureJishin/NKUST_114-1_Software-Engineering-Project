@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Models;
 
 namespace WebApplication1.Data
 {
@@ -9,5 +10,7 @@ namespace WebApplication1.Data
             : base(options)
         {
         }
+
+        public DbSet<Stock> Stocks { get; set; }
     }
 }

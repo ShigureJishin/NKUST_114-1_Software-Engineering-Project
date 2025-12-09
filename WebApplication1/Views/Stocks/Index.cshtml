@@ -1,0 +1,52 @@
+@model WebApplication1.Models.StockListViewModel
+
+@{
+    ViewData["Title"] = "Stocks";
+}
+
+<h1>Stocks</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th class="text-end">Price</th>
+            <th>Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var s in Model.Stocks)
+{
+    <tr>
+        <td>@s.Id</td>
+        <td>@s.StockCode</td>
+        <td>@s.StockName</td>
+        <td class="text-end">@s.ClosingPrice</td>
+        <td>@s.CreatedAt.ToString("g")</td>
+    </tr>
+}
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center">
+    <div>Showing @((Model.Page - 1) * Model.PageSize + 1)-@(((Model.Page - 1) * Model.PageSize) + Model.Stocks.Count()) of @Model.TotalCount</div>
+    <nav>
+        <ul class="pagination mb-0">
+            <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                <a class="page-link" href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize">Previous</a>
+            </li>
+@{
+    var totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
+    for (int i = 1; i <= totalPages; i++)
+    {
+        <li class="page-item @(i == Model.Page ? "active" : "")"><a class="page-link" href="?page=@i&pageSize=@Model.PageSize">@i</a></li>
+    }
+}
+            <li class="page-item @(Model.Page >= (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize) ? "disabled" : "")">
+                <a class="page-link" href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
