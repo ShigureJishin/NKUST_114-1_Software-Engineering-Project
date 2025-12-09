@@ -1,4 +1,4 @@
-@model WebApplication1.Models.StockListViewModel
+ï»¿@model WebApplication1.Models.StockListViewModel
 
 @{
     ViewData["Title"] = "Stocks";
@@ -14,7 +14,8 @@
     {
         if (Model.Sort == col)
         {
-            return Model.SortDir == "asc" ? " ¡ô" : " ¡õ";
+			Console.WriteLine("SortIndicator called for column: " + col + " with direction: " + Model.SortDir);
+            return Model.SortDir == "asc" ? " â†‘" : " â†“";
         }
         return string.Empty;
     }
@@ -78,6 +79,7 @@
             <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="StockName" asp-route-sortDir="@nameToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Name@nameIndicator</a></th>
             <th class="text-end"><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="ClosingPrice" asp-route-sortDir="@priceToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">Price@priceIndicator</a></th>
             <th><a asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-sort="CreatedAt" asp-route-sortDir="@updatedToggle" asp-route-searchField="@Model.SearchField" asp-route-searchTerm="@Model.SearchTerm">UpdatedAt@updatedIndicator</a></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -89,6 +91,7 @@
         <td>@s.StockName</td>
         <td class="text-end">@s.ClosingPrice</td>
         <td>@s.CreatedAt.ToString("g")</td>
+        <td><a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@s.Id">Details</a></td>
     </tr>
 }
     </tbody>

@@ -1,0 +1,48 @@
+﻿@model WebApplication1.Models.Stock
+
+@{
+    ViewData["Title"] = "Stock Details";
+}
+
+<h1>Stock Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">股票代碼 (Stock Code)</dt>
+            <dd class="col-sm-9">@Model.StockCode</dd>
+
+            <dt class="col-sm-3">股票名稱 (Stock Name)</dt>
+            <dd class="col-sm-9">@Model.StockName</dd>
+
+            <dt class="col-sm-3">日期 (Stock Date)</dt>
+            <dd class="col-sm-9">@Model.StockDate?.ToString("yyyy-MM-dd")</dd>
+
+            <dt class="col-sm-3">成交量 (Trade Volume)</dt>
+            <dd class="col-sm-9">@Model.TradeVolume?.ToString("N0")</dd>
+
+            <dt class="col-sm-3">成交值 (Trade Value)</dt>
+            <dd class="col-sm-9">@Model.TradeValue?.ToString("N2")</dd>
+
+            <dt class="col-sm-3">開盤價 (Opening Price)</dt>
+            <dd class="col-sm-9">@Model.OpeningPrice?.ToString("F2")</dd>
+
+            <dt class="col-sm-3">最高價 (Highest Price)</dt>
+            <dd class="col-sm-9">@Model.HighestPrice?.ToString("F2")</dd>
+
+            <dt class="col-sm-3">最低價 (Lowest Price)</dt>
+            <dd class="col-sm-9">@Model.LowestPrice?.ToString("F2")</dd>
+
+            <dt class="col-sm-3">收盤價 (Closing Price)</dt>
+            <dd class="col-sm-9">@Model.ClosingPrice.ToString("F2")</dd>
+
+            <dt class="col-sm-3">漲跌 (Change)</dt>
+            <dd class="col-sm-9">@Model.Change?.ToString("F2")</dd>
+
+            <dt class="col-sm-3">成交筆數 (Transaction)</dt>
+            <dd class="col-sm-9">@Model.Transaction</dd>
+        </dl>
+
+        <a class="btn btn-secondary" asp-action="Index">Back to list</a>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Models;
@@ -75,6 +75,16 @@ namespace WebApplication1.Controllers
             };
 
             return View(vm);
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var stock = await _db.Stocks.FirstOrDefaultAsync(s => s.Id == id.Value);
+            if (stock == null) return NotFound();
+
+            return View(stock);
         }
     }
 }
