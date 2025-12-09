@@ -14,7 +14,11 @@ namespace WebApplication1.Controllers
             _db = db;
         }
 
+<<<<<<< HEAD
         public async Task<IActionResult> Index(int page = 1, int pageSize = 200, string sort = "Id", string sortDir = "asc", string searchField = null, string searchTerm = null)
+=======
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 200, string sort = "Id", string sortDir = "asc")
+>>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
         {
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 200;
@@ -23,6 +27,7 @@ namespace WebApplication1.Controllers
 
             var query = _db.Stocks.AsQueryable();
 
+<<<<<<< HEAD
             // Apply filtering by chosen field
             if (!string.IsNullOrEmpty(searchField) && !string.IsNullOrEmpty(searchTerm))
             {
@@ -36,6 +41,8 @@ namespace WebApplication1.Controllers
                 }
             }
 
+=======
+>>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
             // Apply sorting using actual property names
             switch (sort)
             {
@@ -69,9 +76,13 @@ namespace WebApplication1.Controllers
                 PageSize = pageSize,
                 TotalCount = total,
                 Sort = sort,
+<<<<<<< HEAD
                 SortDir = sortDir,
                 SearchField = searchField,
                 SearchTerm = searchTerm
+=======
+                SortDir = sortDir
+>>>>>>> a7e0f5ca530cf2f64d9adfbd1523ed63bb5a3718
             };
 
             return View(vm);
