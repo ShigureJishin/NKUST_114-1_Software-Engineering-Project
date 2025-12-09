@@ -1,0 +1,83 @@
+﻿@model WebApplication1.Controllers.SingleRecordModel
+
+@{
+    ViewData["Title"] = "Single or File Upload";
+}
+
+<h1>Upload Stock Data</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Single Record</h4>
+        <form asp-action="SingleToFile" method="post">
+            <div class="mb-3">
+                <label class="form-label">Date (yyyyMMdd)</label>
+                <input name="Date" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Code</label>
+                <input name="Code" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input name="Name" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">TradeVolume</label>
+                <input name="TradeVolume" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">TradeValue</label>
+                <input name="TradeValue" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">OpeningPrice</label>
+                <input name="OpeningPrice" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">HighestPrice</label>
+                <input name="HighestPrice" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">LowestPrice</label>
+                <input name="LowestPrice" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">ClosingPrice</label>
+                <input name="ClosingPrice" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Change</label>
+                <input name="Change" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Transaction</label>
+                <input name="Transaction" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Single</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Upload JSON File</h4>
+        <form asp-action="FileToConsole" enctype="multipart/form-data" method="post">
+            <div class="mb-3">
+                <label class="form-label">Select JSON file</label>
+                <input type="file" name="file" class="form-control" accept="application/json" />
+            </div>
+            <button type="submit" class="btn btn-primary">Upload File</button>
+        </form>
+    </div>
+</div>
+
+@if (ViewBag.Result != null)
+{
+    <div class="mt-3">
+        <h5>Result</h5>
+        <pre>@ViewBag.Result</pre>
+    </div>
+}
