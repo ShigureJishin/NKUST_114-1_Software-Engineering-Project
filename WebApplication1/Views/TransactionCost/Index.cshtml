@@ -1,0 +1,77 @@
+﻿@model WebApplication1.Models.TransactionCostInput
+
+<h2>交易成本計算機</h2>
+
+<form method="post" asp-action="Index">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label">價格</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Quantity" class="form-label">數量</label>
+        <input asp-for="Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsSell" class="form-check-input" />
+        <label asp-for="IsSell" class="form-check-label">賣出 (若未勾選視為買入)</label>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CommissionRate" class="form-label">手續費率 (小數，例如 0.001425)</label>
+        <input asp-for="CommissionRate" class="form-control" />
+        <span asp-validation-for="CommissionRate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MinCommission" class="form-label">最低手續費 (NT)</label>
+        <input asp-for="MinCommission" class="form-control" />
+        <span asp-validation-for="MinCommission" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TransactionTaxRate" class="form-label">交易稅率 (賣出適用，例如 0.003)</label>
+        <input asp-for="TransactionTaxRate" class="form-control" />
+        <span asp-validation-for="TransactionTaxRate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="OtherFees" class="form-label">其他固定費用</label>
+        <input asp-for="OtherFees" class="form-control" />
+        <span asp-validation-for="OtherFees" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">計算</button>
+</form>
+
+@if (ViewBag.Result != null)
+{
+    var result = ViewBag.Result as WebApplication1.Models.TransactionCostResult;
+
+    <hr />
+    <h4>計算結果</h4>
+    <dl class="row">
+        <dt class="col-sm-3">成交金額</dt>
+        <dd class="col-sm-9">@result.GrossAmount.ToString("N2")</dd>
+
+        <dt class="col-sm-3">手續費</dt>
+        <dd class="col-sm-9">@result.Commission.ToString("N2")</dd>
+
+        <dt class="col-sm-3">交易稅</dt>
+        <dd class="col-sm-9">@result.Tax.ToString("N2")</dd>
+
+        <dt class="col-sm-3">其他費用</dt>
+        <dd class="col-sm-9">@result.OtherFees.ToString("N2")</dd>
+
+        <dt class="col-sm-3">總費用</dt>
+        <dd class="col-sm-9">@result.TotalFees.ToString("N2")</dd>
+
+        <dt class="col-sm-3">淨出入</dt>
+        <dd class="col-sm-9">@result.NetAmount.ToString("N2")</dd>
+    </dl>
+}
