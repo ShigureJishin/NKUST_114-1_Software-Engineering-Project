@@ -1,0 +1,61 @@
+﻿@model WebApplication1.Models.Stock
+
+@{
+    ViewData["Title"] = "Edit Stock";
+}
+
+<h1>Edit Stock</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label class="form-label">Stock Code</label>
+        <input asp-for="StockCode" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Stock Name</label>
+        <input asp-for="StockName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Stock Date</label>
+        <input asp-for="StockDate" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Trade Volume</label>
+        <input asp-for="TradeVolume" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Trade Value</label>
+        <input asp-for="TradeValue" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Opening Price</label>
+        <input asp-for="OpeningPrice" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Highest Price</label>
+        <input asp-for="HighestPrice" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Lowest Price</label>
+        <input asp-for="LowestPrice" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Closing Price</label>
+        <input asp-for="ClosingPrice" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Change</label>
+        <input asp-for="Change" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Transaction</label>
+        <input asp-for="Transaction" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Created At</label>
+        <input asp-for="CreatedAt" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary ms-2">Cancel</a>
+</form>
