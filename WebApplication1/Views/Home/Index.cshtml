@@ -1,8 +1,107 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">市場結構 長條圖</h1>
+    <p>統計當日上漲 / 下跌 / 平盤家數</p>
 </div>
+
+<!-- 日期選擇 -->
+<div style="text-align:center; margin-bottom:20px;">
+    <input type="date" id="tradeDate" />
+    <button onclick="loadChart()">查詢</button>
+</div>
+
+<!-- 長條圖 -->
+<div style="width:550px;margin:auto;">
+    <canvas id="marketChart" height="400"></canvas> <!-- 設定高度 -->
+</div>
+
+<!-- Chart.js & Data Labels 插件 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+<script>
+    let marketChart;
+
+    // 取得最近有資料的日期
+    async function getLatestDate() {
+        try {
+            const res = await fetch('/api/stockapi/market-summary?date=latest');
+            const data = await res.json();
+            if(data.latestDate){
+                document.getElementById("tradeDate").value = data.latestDate;
+            } else {
+                document.getElementById("tradeDate").value = new Date().toISOString().slice(0,10);
+            }
+        } catch(e){
+            console.error(e);
+            document.getElementById("tradeDate").value = new Date().toISOString().slice(0,10);
+        }
+    }
+
+    async function loadChart() {
+        const date = document.getElementById("tradeDate").value;
+
+        try {
+            const res = await fetch(`/api/stockapi/market-summary?date=${date}`);
+            const data = await res.json();
+
+            if (data.message && data.message.length > 0) {
+                alert(data.message);
+                if (marketChart) marketChart.destroy();
+                return;
+            }
+
+            if (marketChart) marketChart.destroy();
+
+            const ctx = document.getElementById("marketChart");
+            const values = [data.up, data.down, data.flat];
+
+            marketChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["上漲", "下跌", "平盤"],
+                    datasets: [{
+                        label: "家數統計",
+                        data: values,
+                        backgroundColor: ["#ff4d4d", "#4da6ff", "#cccccc"],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,  // 讓 Canvas 高度可自由伸縮
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            clamp: true,   // 數值不會被切掉
+                            color: '#000',
+                            font: { weight: 'bold', size: 20 },
+                            formatter: function(value) { return value; }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: Math.max(...values) * 1.2, // 自動比最大值高20%
+                            ticks: { stepSize: Math.ceil(Math.max(...values)/5) }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert("取得資料失敗！");
+        }
+    }
+
+    // 頁面載入先取得最近有資料的日期，再載入圖表
+    getLatestDate().then(() => loadChart());
+</script>
