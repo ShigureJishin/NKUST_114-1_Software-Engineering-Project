@@ -29,7 +29,8 @@
 - `ConsoleApp1/StockDbContext.cs`：EF Core 資料庫上下文。
 - `ConsoleApp1/Migrations/`：資料庫 migration 檔案。
 - `ConsoleApp1/SourceData/STOCK_DAY_ALL.json`：原始 JSON 檔案。
-- `WebApplication1/Controllers/StocksController.cs`：股票資料 API 與查詢邏輯。
+- `WebApplication1/Controllers/StocksController.cs`：股票資料網頁（MVC）查詢、分頁、排序。
+- `WebApplication1/Controllers/StockApiController.cs`：股票資料 API（JSON 回傳）。
 - `WebApplication1/Models/Stock.cs`：股票資料模型。
 - `WebApplication1/Data/ApplicationDbContext.cs`：Web 前端資料庫上下文。
 - `WebApplication1/Views/Stocks/`：股票查詢頁面。
@@ -40,8 +41,35 @@
 
 - 讀取 JSON 檔案並反序列化為物件
 - 寫入股票資料至 LocalDB 資料庫
-- 提供 API 查詢股票資料（分頁、排序、篩選）
+- 提供 API 讀取股票資料（JSON）
 - 前端 UI：網頁查詢、瀏覽、詳細資料顯示
+
+---
+
+## API 文件（Swagger）
+
+啟動 `WebApplication1` 後，可透過 Swagger UI 測試 API：
+
+- Swagger UI：`/swagger`
+- OpenAPI JSON：`/swagger/v1/swagger.json`
+
+---
+
+## 現有 API（WebApplication1）
+
+Base URL：`/api/StockApi`
+
+### 取得當日市場漲跌平家數
+
+- `GET /api/StockApi/market-summary`
+  - Query：`date`（可選，格式 `yyyy-MM-dd`；未提供則自動使用最近有資料日期）
+- `GET /api/StockApi/market-summary/latest`
+
+### 取得指定日期的所有股票資訊
+
+- `GET /api/StockApi/stocks`
+  - Query：`date`（可選，格式 `yyyy-MM-dd`；未提供則自動使用最近有資料日期）
+- `GET /api/StockApi/stocks/latest`
 
 ---
 
@@ -53,8 +81,16 @@
 3. 程式會自動讀取 JSON 檔案，反序列化並寫入資料庫。
 
 ### WebApplication1
-1. 使用 Visual Studio 或 `dotnet run` 執行 `WebApplication1` 專案。
-2. 於瀏覽器開啟首頁，進行股票資料查詢、篩選、分頁等操作。
+1. 使用 Visual Studio 或執行：
+
+  ```bash
+  dotnet run --project WebApplication1/WebApplication1.csproj
+  ```
+
+2. 於瀏覽器開啟：
+
+  - 首頁：`/`
+  - Swagger：`/swagger`
 
 ---
 
