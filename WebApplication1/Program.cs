@@ -27,7 +27,7 @@ namespace WebApplication1
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "WebApplication1 API",
+                    Title = "Taiwan Stock Market Query API",
                     Version = "v1"
                 });
             });
@@ -42,7 +42,7 @@ namespace WebApplication1
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApplication1 API v1");
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Taiwan Stock Market Query API v1");
                 });
             }
             else
