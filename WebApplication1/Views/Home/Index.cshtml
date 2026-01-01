@@ -32,6 +32,11 @@
             const data = await res.json();
             if (data.latestDate) {
                 document.getElementById('tradeDate').value = data.latestDate;
+                // 若 latestDate 不是今天，提醒使用者今日資料未更新
+                const todayStr = new Date().toISOString().slice(0, 10);
+                if (data.latestDate !== todayStr) {
+                    alert('今日資料未更新');
+                }
             } else {
                 document.getElementById('tradeDate').value = new Date().toISOString().slice(0, 10);
             }
