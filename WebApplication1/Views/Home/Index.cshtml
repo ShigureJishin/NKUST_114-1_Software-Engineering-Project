@@ -25,80 +25,124 @@
 <script>
     let marketChart;
 
-    // 取得最近有資料的日期
+    // 取得最近有資料的日期（使用專門路由 /latest），並回填到日期欄位
     async function getLatestDate() {
         try {
-            const res = await fetch('/api/stockapi/market-summary?date=latest');
+            const res = await fetch('/api/stockapi/market-summary/latest');
             const data = await res.json();
-            if(data.latestDate){
-                document.getElementById("tradeDate").value = data.latestDate;
+            if (data.latestDate) {
+                document.getElementById('tradeDate').value = data.latestDate;
             } else {
-                document.getElementById("tradeDate").value = new Date().toISOString().slice(0,10);
+                document.getElementById('tradeDate').value = new Date().toISOString().slice(0, 10);
             }
-        } catch(e){
+        } catch (e) {
             console.error(e);
-            document.getElementById("tradeDate").value = new Date().toISOString().slice(0,10);
+            document.getElementById('tradeDate').value = new Date().toISOString().slice(0, 10);
         }
     }
 
+    // 讀取並顯示長條圖。若沒有指定日期或指定日期為空，則向 /latest 取最新一日資料
     async function loadChart() {
-        const date = document.getElementById("tradeDate").value;
+        let date = document.getElementById('tradeDate').value;
+        let url;
+        if (!date) {
+            url = '/api/stockapi/market-summary/latest';
+        } else {
+            url = `/api/stockapi/market-summary?date=${date}`;
+        }
 
         try {
-            const res = await fetch(`/api/stockapi/market-summary?date=${date}`);
-            const data = await res.json();
+            const res = await fetch(url);
+            let data = await res.json();
 
+            // 若後端回傳 message 表示無資料或錯誤
             if (data.message && data.message.length > 0) {
-                alert(data.message);
-                if (marketChart) marketChart.destroy();
-                return;
+                const todayStr = new Date().toISOString().slice(0, 10);
+                // 當使用者查詢的是今日，改為自動嘗試向 /latest 取得最近有資料的一日
+                if (date === todayStr) {
+                    try {
+                        const res2 = await fetch('/api/stockapi/market-summary/latest');
+                        const data2 = await res2.json();
+                        if (!(data2.message && data2.message.length > 0)) {
+                            // 今日資料未更新，改用最近一日資料並告知使用者
+                            alert('今日資料未更新');
+                            data = data2; // 使用最新一日的資料繼續畫圖
+                        } else {
+                            alert('今日資料未更新');
+                            if (marketChart) marketChart.destroy();
+                            return;
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        alert('今日資料未更新');
+                        if (marketChart) marketChart.destroy();
+                        return;
+                    }
+                } else {
+                    alert(data.message);
+                    if (marketChart) marketChart.destroy();
+                    return;
+                }
             }
+
+            const up = Number(data.up ?? 0);
+            const down = Number(data.down ?? 0);
+            const flat = Number(data.flat ?? 0);
+            const values = [up, down, flat];
 
             if (marketChart) marketChart.destroy();
 
-            const ctx = document.getElementById("marketChart");
-            const values = [data.up, data.down, data.flat];
+            const ctx = document.getElementById('marketChart');
+
+            const maxVal = Math.max(...values);
+            const suggestedMax = maxVal > 0 ? Math.ceil(maxVal * 1.2) : 1;
+            const stepSize = Math.ceil(suggestedMax / 5) || 1;
 
             marketChart = new Chart(ctx, {
-                type: "bar",
+                type: 'bar',
                 data: {
-                    labels: ["上漲", "下跌", "平盤"],
+                    labels: ['上漲', '下跌', '平盤'],
                     datasets: [{
-                        label: "家數統計",
+                        label: '家數統計',
                         data: values,
-                        backgroundColor: ["#ff4d4d", "#4da6ff", "#cccccc"],
+                        backgroundColor: ['#ff4d4d', '#4da6ff', '#cccccc'],
                         borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,  // 讓 Canvas 高度可自由伸縮
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: { enabled: true },
                         datalabels: {
                             anchor: 'end',
                             align: 'end',
-                            clamp: true,   // 數值不會被切掉
+                            clamp: true,
                             color: '#000',
-                            font: { weight: 'bold', size: 20 },
-                            formatter: function(value) { return value; }
+                            font: { weight: 'bold', size: 14 },
+                            formatter: function (value) { return value; }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            suggestedMax: Math.max(...values) * 1.2, // 自動比最大值高20%
-                            ticks: { stepSize: Math.ceil(Math.max(...values)/5) }
+                            suggestedMax: suggestedMax,
+                            ticks: { stepSize: stepSize }
                         }
                     }
                 },
                 plugins: [ChartDataLabels]
             });
 
+            // 若後端有回傳最新日期，回填日期欄位（例如使用 /latest）
+            if (data.latestDate) {
+                document.getElementById('tradeDate').value = data.latestDate;
+            }
+
         } catch (error) {
             console.error(error);
-            alert("取得資料失敗！");
+            alert('取得資料失敗！');
         }
     }
 
