@@ -3,14 +3,14 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">市場結構 長條圖</h1>
-    <p>統計當日上漲 / 下跌 / 平盤家數</p>
+    <h1 class="display-4">Market Structure — Bar Chart</h1>
+    <p>Counts of stocks up / down / unchanged for the day</p>
 </div>
 
-<!-- 日期選擇 -->
+<!-- Date selector -->
 <div style="text-align:center; margin-bottom:20px;">
     <input type="date" id="tradeDate" />
-    <button onclick="loadChart()">查詢</button>
+    <button onclick="loadChart()">Search</button>
 </div>
 
 <!-- 長條圖 -->
@@ -35,7 +35,7 @@
                 // 若 latestDate 不是今天，提醒使用者今日資料未更新
                 const todayStr = new Date().toISOString().slice(0, 10);
                 if (data.latestDate !== todayStr) {
-                    alert('今日資料未更新');
+                    alert('Today\'s data is not yet updated');
                 }
             } else {
                 document.getElementById('tradeDate').value = new Date().toISOString().slice(0, 10);
@@ -70,16 +70,16 @@
                         const data2 = await res2.json();
                         if (!(data2.message && data2.message.length > 0)) {
                             // 今日資料未更新，改用最近一日資料並告知使用者
-                            alert('今日資料未更新');
+                            alert('Today\'s data is not yet updated');
                             data = data2; // 使用最新一日的資料繼續畫圖
                         } else {
-                            alert('今日資料未更新');
+                            alert('Today\'s data is not yet updated');
                             if (marketChart) marketChart.destroy();
                             return;
                         }
                     } catch (e) {
                         console.error(e);
-                        alert('今日資料未更新');
+                        alert('Today\'s data is not yet updated');
                         if (marketChart) marketChart.destroy();
                         return;
                     }
@@ -106,9 +106,9 @@
             marketChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['上漲', '下跌', '平盤'],
+                    labels: ['Up', 'Down', 'Unchanged'],
                     datasets: [{
-                        label: '家數統計',
+                        label: 'Count',
                         data: values,
                         backgroundColor: ['#ff4d4d', '#4da6ff', '#cccccc'],
                         borderWidth: 1
@@ -147,7 +147,7 @@
 
         } catch (error) {
             console.error(error);
-            alert('取得資料失敗！');
+            alert('Failed to retrieve data!');
         }
     }
 
