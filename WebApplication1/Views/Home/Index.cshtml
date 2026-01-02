@@ -110,7 +110,7 @@
                     datasets: [{
                         label: 'Count',
                         data: values,
-                        backgroundColor: ['#ff4d4d', '#4da6ff', '#cccccc'],
+                        backgroundColor: ['#ff4d4d', '#00a859', '#cccccc'],
                         borderWidth: 1
                     }]
                 },
@@ -125,11 +125,17 @@
                             align: 'end',
                             clamp: true,
                             color: '#000',
-                            font: { weight: 'bold', size: 14 },
+                            font: { weight: 'bold', size: 25 },
                             formatter: function (value) { return value; }
                         }
                     },
                     scales: {
+                        x: {
+                            ticks: {
+                                font: { size: 16 },
+                                color: '#000'
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             suggestedMax: suggestedMax,
