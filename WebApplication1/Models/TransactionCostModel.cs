@@ -5,6 +5,9 @@ namespace WebApplication1.Models
 {
     public class TransactionCostInput
     {
+        // å¦‚æžœå¡«å…¥è‚¡ç¥¨ä»£ç¢¼ï¼ŒController æœƒä»¥è³‡æ–™åº«çš„æ”¶ç›¤åƒ¹è¦†å¯« Price
+        public string StockCode { get; set; }
+
         [Required]
         [Range(0.0000001, double.MaxValue)]
         public decimal Price { get; set; }
@@ -13,17 +16,17 @@ namespace WebApplication1.Models
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
 
-        // ¶R¤J false / ½æ¥X true
+        // ï¿½Rï¿½J false / ï¿½ï¿½X true
         public bool IsSell { get; set; }
 
         [Range(0, 1)]
-        public decimal CommissionRate { get; set; } = 0.001425m; // ¹w³]¤âÄò¶O²v (¥i½Õ¾ã)
+        public decimal CommissionRate { get; set; } = 0.001425m; // ï¿½wï¿½]ï¿½ï¿½ï¿½ï¿½Oï¿½v (ï¿½iï¿½Õ¾ï¿½)
 
         [Range(0, double.MaxValue)]
-        public decimal MinCommission { get; set; } = 20m; // ¹w³]³Ì§C¤âÄò¶O
+        public decimal MinCommission { get; set; } = 20m; // ï¿½wï¿½]ï¿½Ì§Cï¿½ï¿½ï¿½ï¿½O
 
         [Range(0, 1)]
-        public decimal TransactionTaxRate { get; set; } = 0.003m; // ¹w³]¥æ©öµ|¡]½æ¥X®É¾A¥Î¡^
+        public decimal TransactionTaxRate { get; set; } = 0.003m; // ï¿½wï¿½]ï¿½ï¿½ï¿½ï¿½|ï¿½]ï¿½ï¿½Xï¿½É¾Aï¿½Î¡^
 
         [Range(0, double.MaxValue)]
         public decimal OtherFees { get; set; } = 0m;
@@ -36,7 +39,7 @@ namespace WebApplication1.Models
         public decimal Tax { get; set; }
         public decimal OtherFees { get; set; }
         public decimal TotalFees { get; set; }      // Commission + Tax + OtherFees
-        public decimal NetAmount { get; set; }      // ½æ¥X¡GGross - TotalFees ; ¶R¤J¡G- (Gross + TotalFees)
+        public decimal NetAmount { get; set; }      // ï¿½ï¿½Xï¿½GGross - TotalFees ; ï¿½Rï¿½Jï¿½G- (Gross + TotalFees)
     }
 
     public static class TransactionCostCalculator
@@ -54,11 +57,11 @@ namespace WebApplication1.Models
             decimal net;
             if (input.IsSell)
             {
-                net = gross - totalFees; // ½æ¥X²b¦¬
+                net = gross - totalFees; // ï¿½ï¿½Xï¿½bï¿½ï¿½
             }
             else
             {
-                net = -(gross + totalFees); // ¶R¤J²b¤ä¥Xªí¥Ü¬°­t¼Æ
+                net = -(gross + totalFees); // ï¿½Rï¿½Jï¿½bï¿½ï¿½Xï¿½ï¿½ï¿½Ü¬ï¿½ï¿½tï¿½ï¿½
             }
 
             return new TransactionCostResult

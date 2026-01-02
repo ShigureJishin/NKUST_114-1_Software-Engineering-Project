@@ -1,52 +1,84 @@
 ﻿@model WebApplication1.Models.TransactionCostInput
 
-<h2>交易成本計算機</h2>
+<h2>Transaction Cost Calculator</h2>
 
 <form method="post" asp-action="Index">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
-        <label asp-for="Price" class="form-label">價格</label>
-        <input asp-for="Price" class="form-control" />
+        <div class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label">Field</label>
+                <select id="searchField" class="form-select">
+                    <option value="StockCode">StockCode</option>
+                    <option value="StockName">StockName</option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <label class="form-label">Code/Name</label>
+                <input id="searchTerm" type="text" class="form-control" placeholder="Enter stock code or name" />
+            </div>
+
+            <div class="col-auto">
+                <button id="searchBtn" type="button" class="btn btn-secondary">Search and Update Price</button>
+            </div>
+
+            <div class="col-auto">
+                <small id="searchMsg" class="form-text text-muted"></small>
+            </div>
+        </div>
+        <div class="form-text">Searches the Stocks database and fills the closing price into the Price field when found.</div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StockCode" class="form-label">Stock Code (optional)</label>
+        <input asp-for="StockCode" class="form-control" id="stockCode" />
+        <span asp-validation-for="StockCode" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label">Price</label>
+        <input asp-for="Price" class="form-control" id="price" />
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Quantity" class="form-label">數量</label>
+        <label asp-for="Quantity" class="form-label">Quantity</label>
         <input asp-for="Quantity" class="form-control" />
         <span asp-validation-for="Quantity" class="text-danger"></span>
     </div>
 
     <div class="form-check mb-3">
         <input asp-for="IsSell" class="form-check-input" />
-        <label asp-for="IsSell" class="form-check-label">賣出 (若未勾選視為買入)</label>
+        <label asp-for="IsSell" class="form-check-label">Sell (unchecked = Buy)</label>
     </div>
 
     <div class="mb-3">
-        <label asp-for="CommissionRate" class="form-label">手續費率 (小數，例如 0.001425)</label>
+        <label asp-for="CommissionRate" class="form-label">Commission Rate (decimal, e.g., 0.001425)</label>
         <input asp-for="CommissionRate" class="form-control" />
         <span asp-validation-for="CommissionRate" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="MinCommission" class="form-label">最低手續費 (NT)</label>
+        <label asp-for="MinCommission" class="form-label">Minimum Commission (NT)</label>
         <input asp-for="MinCommission" class="form-control" />
         <span asp-validation-for="MinCommission" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="TransactionTaxRate" class="form-label">交易稅率 (賣出適用，例如 0.003)</label>
+        <label asp-for="TransactionTaxRate" class="form-label">Transaction Tax Rate (applies to sells, e.g., 0.003)</label>
         <input asp-for="TransactionTaxRate" class="form-control" />
         <span asp-validation-for="TransactionTaxRate" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="OtherFees" class="form-label">其他固定費用</label>
+        <label asp-for="OtherFees" class="form-label">Other Fixed Fees</label>
         <input asp-for="OtherFees" class="form-control" />
         <span asp-validation-for="OtherFees" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">計算</button>
+    <button type="submit" class="btn btn-primary">Calculate</button>
 </form>
 
 @if (ViewBag.Result != null)
@@ -54,24 +86,79 @@
     var result = ViewBag.Result as WebApplication1.Models.TransactionCostResult;
 
     <hr />
-    <h4>計算結果</h4>
+    <h4>Results</h4>
     <dl class="row">
-        <dt class="col-sm-3">成交金額</dt>
+        <dt class="col-sm-3">Gross Amount</dt>
         <dd class="col-sm-9">@result.GrossAmount.ToString("N2")</dd>
 
-        <dt class="col-sm-3">手續費</dt>
+        <dt class="col-sm-3">Commission</dt>
         <dd class="col-sm-9">@result.Commission.ToString("N2")</dd>
 
-        <dt class="col-sm-3">交易稅</dt>
+        <dt class="col-sm-3">Tax</dt>
         <dd class="col-sm-9">@result.Tax.ToString("N2")</dd>
 
-        <dt class="col-sm-3">其他費用</dt>
+        <dt class="col-sm-3">Other Fees</dt>
         <dd class="col-sm-9">@result.OtherFees.ToString("N2")</dd>
 
-        <dt class="col-sm-3">總費用</dt>
+        <dt class="col-sm-3">Total Fees</dt>
         <dd class="col-sm-9">@result.TotalFees.ToString("N2")</dd>
 
-        <dt class="col-sm-3">淨出入</dt>
+        <dt class="col-sm-3">Net Amount</dt>
         <dd class="col-sm-9">@result.NetAmount.ToString("N2")</dd>
     </dl>
 }
+
+<script>
+    (function(){
+        const btn = document.getElementById('searchBtn');
+        const field = document.getElementById('searchField');
+        const term = document.getElementById('searchTerm');
+        const msg = document.getElementById('searchMsg');
+        const priceEl = document.getElementById('price');
+        const stockCodeEl = document.getElementById('stockCode');
+
+        btn.addEventListener('click', async function(){
+            const q = (term.value || '').trim();
+                // 若選擇 StockCode，要求只包含數字
+            if (field.value === 'StockCode' && !/^\d+$/.test(q)) {
+                msg.textContent = 'Stock code must contain only digits.';
+                return;
+            }
+            if (!q) {
+                msg.textContent = 'Please enter a code or name before searching.';
+                return;
+            }
+
+            btn.disabled = true;
+                msg.textContent = 'Searching...';
+            try {
+                const f = field.value;
+                const url = `/api/StockApi/search?field=${encodeURIComponent(f)}&term=${encodeURIComponent(q)}`;
+                const res = await fetch(url);
+                if (res.status === 404) {
+                    msg.textContent = 'No matching data found.';
+                    return;
+                }
+                if (!res.ok) throw new Error('API error ' + res.status);
+                const found = await res.json();
+
+                // 兼容 PascalCase / camelCase
+                const stockCode = found.StockCode ?? found.stockCode ?? '';
+                const stockName = found.StockName ?? found.stockName ?? '';
+                const closingPrice = found.ClosingPrice ?? found.closingPrice ?? found.closing_price ?? 0;
+                const stockDate = found.StockDate ?? found.stockDate ?? '';
+
+                // 更新欄位
+                if (priceEl) priceEl.value = Number(closingPrice || 0).toFixed(2);
+                if (stockCodeEl) stockCodeEl.value = stockCode;
+                //msg.textContent = `Found: ${stockCode} ${stockName} (${stockDate})`;
+                msg.textContent = `Found: ${stockCode} ${stockName}, price updated.`;
+            } catch (err) {
+                console.error(err);
+                msg.textContent = 'Search error occurred';
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    })();
+</script>

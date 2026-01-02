@@ -168,5 +168,99 @@ namespace WebApplication1.Controllers
         [HttpGet("stocks/latest")]
         public Task<IActionResult> GetStocksLatest()
             => GetStocksByDate(date: null);
+
+        /// <summary>
+        /// 依代碼或名稱搜尋單筆最近資料（用於前端快速查價）
+        /// </summary>
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string field, [FromQuery] string term)
+        {
+            if (string.IsNullOrWhiteSpace(term)) return BadRequest(new { Message = "term is required" });
+
+            var q = term.Trim();
+
+            if (string.Equals(field, "StockCode", StringComparison.OrdinalIgnoreCase))
+            {
+                var code = q.ToUpper();
+                var item = await _db.Stocks
+                    .AsNoTracking()
+                    .Where(s => s.StockCode != null && s.StockCode.Trim().ToUpper() == code)
+                    .OrderByDescending(s => s.StockDate)
+                    .FirstOrDefaultAsync();
+
+                if (item == null) return NotFound(new { Message = "NotFound" });
+
+                return Ok(new
+                {
+                    item.Id,
+                    item.StockCode,
+                    item.StockName,
+                    item.StockDate,
+                    item.ClosingPrice,
+                    item.TradeVolume,
+                    item.TradeValue
+                });
+            }
+
+            // default: search by name (contains, case-insensitive)
+            var up = q.ToUpper();
+            var found = await _db.Stocks
+                .AsNoTracking()
+                .Where(s => s.StockName != null && s.StockName.ToUpper().Contains(up))
+                .OrderByDescending(s => s.StockDate)
+                .FirstOrDefaultAsync();
+
+            if (found == null) return NotFound(new { Message = "NotFound" });
+
+            return Ok(new
+            {
+                found.Id,
+                found.StockCode,
+                found.StockName,
+                found.StockDate,
+                found.ClosingPrice,
+                found.TradeVolume,
+                found.TradeValue
+            });
+        }
+
+        /// <summary>
+        /// 以股票代碼取得該股票最近一筆資料（若有多日資料則取最近日期）
+        /// </summary>
+        [HttpGet("stock/{code}")]
+        public async Task<IActionResult> GetStockByCode(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return BadRequest(new { Message = "股票代碼為空" });
+
+            var trimmed = code.Trim().ToUpper();
+
+            var stock = await _db.Stocks
+                .AsNoTracking()
+                .Where(s => s.StockCode != null && s.StockCode.Trim().ToUpper() == trimmed)
+                .OrderByDescending(s => s.StockDate ?? DateTime.MinValue)
+                .FirstOrDefaultAsync();
+
+            if (stock == null)
+            {
+                return NotFound(new { Message = "找不到此股票代碼" });
+            }
+
+            return Ok(new
+            {
+                stock.Id,
+                stock.StockCode,
+                stock.StockName,
+                StockDate = stock.StockDate,
+                stock.TradeVolume,
+                stock.TradeValue,
+                stock.OpeningPrice,
+                stock.HighestPrice,
+                stock.LowestPrice,
+                stock.ClosingPrice,
+                stock.Change,
+                stock.Transaction,
+                stock.CreatedAt
+            });
+        }
     }
 }
