@@ -55,14 +55,45 @@
     </div>
 
     <div class="mb-3">
+        <label class="form-label">Broker (optional)</label>
+        <select asp-for="Broker" id="brokerSelect" class="form-select mb-2">
+            <option value="">-- 選擇券商（若不需要請留空） --</option>
+            <option value="新光證券">新光證券</option>
+            <option value="國泰證券">國泰證券</option>
+            <option value="台灣工銀證券">台灣工銀證券</option>
+            <option value="大展證券">大展證券</option>
+            <option value="台銀證券">台銀證券</option>
+            <option value="玉山證券">玉山證券</option>
+            <option value="土銀證券">土銀證券</option>
+            <option value="陽信證券">陽信證券</option>
+            <option value="致和證券">致和證券</option>
+            <option value="兆豐證券">兆豐證券</option>
+            <option value="康和證券">康和證券</option>
+            <option value="中國信託證券">中國信託證券</option>
+            <option value="大慶證券">大慶證券</option>
+            <option value="台企銀證券">台企銀證券</option>
+            <option value="元大證券">元大證券</option>
+            <option value="富邦證券">富邦證券</option>
+            <option value="日盛證券">日盛證券</option>
+            <option value="凱基證券">凱基證券</option>
+            <option value="統一證券">統一證券</option>
+            <option value="第一金證券">第一金證券</option>
+            <option value="德信證券">德信證券</option>
+            <option value="台新證券">台新證券</option>
+            <option value="華南永昌證券">華南永昌證券</option>
+            <option value="國票證券">國票證券</option>
+            <option value="大眾證券">大眾證券</option>
+            <option value="新百王證券">新百王證券</option>
+        </select>
+
         <label asp-for="CommissionRate" class="form-label">Commission Rate (decimal, e.g., 0.001425)</label>
-        <input asp-for="CommissionRate" class="form-control" />
+        <input asp-for="CommissionRate" class="form-control" id="commissionRate" />
         <span asp-validation-for="CommissionRate" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="MinCommission" class="form-label">Minimum Commission (NT)</label>
-        <input asp-for="MinCommission" class="form-control" />
+        <input asp-for="MinCommission" class="form-control" id="minCommission" />
         <span asp-validation-for="MinCommission" class="text-danger"></span>
     </div>
 
@@ -116,6 +147,66 @@
         const msg = document.getElementById('searchMsg');
         const priceEl = document.getElementById('price');
         const stockCodeEl = document.getElementById('stockCode');
+
+        // Broker -> commission mapping
+        const brokerSelect = document.getElementById('brokerSelect');
+        const commissionEl = document.getElementById('commissionRate');
+        const minCommissionEl = document.getElementById('minCommission');
+        const isSellEl = document.querySelector('input[name="IsSell"]');
+        const taxEl = document.querySelector('input[name="TransactionTaxRate"]');
+        // 基礎手續費 (若您使用不同基準，可修改此數值)
+        const baseCommissionRate = 0.001425;
+        const brokers = {
+            '新光證券': {d:0.28, min:1},
+            '國泰證券': {d:0.65, min:1},
+            '台灣工銀證券': {d:0.28, min:20},
+            '大展證券': {d:0.36, min:20},
+            '台銀證券': {d:0.35, min:20},
+            '玉山證券': {d:0.6, min:20},
+            '土銀證券': {d:0.3, min:20},
+            '陽信證券': {d:0.6, min:20},
+            '致和證券': {d:0.438, min:20},
+            '兆豐證券': {d:0.5, min:20},
+            '康和證券': {d:0.65, min:20},
+            '中國信託證券': {d:0.38, min:20},
+            '大慶證券': {d:0.5, min:20},
+            '台企銀證券': {d:0.56, min:20},
+            '元大證券': {d:0.6, min:20},
+            '富邦證券': {d:0.6, min:20},
+            '日盛證券': {d:0.6, min:20},
+            '凱基證券': {d:0.6, min:20},
+            '統一證券': {d:0.6, min:1},
+            '第一金證券': {d:0.6, min:2},
+            '德信證券': {d:0.6, min:20},
+            '台新證券': {d:0.28, min:20},
+            '華南永昌證券': {d:0.65, min:1},
+            '國票證券': {d:0.65, min:20},
+            '大眾證券': {d:0.5, min:20},
+            '新百王證券': {d:0.3, min:1}
+        };
+
+        if (brokerSelect) {
+            brokerSelect.addEventListener('change', function(){
+                const key = brokerSelect.value;
+                if (!key) return; // allow manual override
+                const b = brokers[key];
+                if (!b) return;
+                if (commissionEl) commissionEl.value = (baseCommissionRate * b.d).toFixed(6);
+                if (minCommissionEl) minCommissionEl.value = b.min;
+            });
+        }
+
+        // 當 Sell 勾選時，自動帶入交易稅率 0.3% (0.003)
+        if (isSellEl && taxEl) {
+            const defaultTax = '0.003';
+            // 若頁面載入時已勾選，先設定一次
+            if (isSellEl.checked) taxEl.value = defaultTax;
+            isSellEl.addEventListener('change', function() {
+                if (isSellEl.checked) {
+                    taxEl.value = defaultTax;
+                }
+            });
+        }
 
         btn.addEventListener('click', async function(){
             const q = (term.value || '').trim();
