@@ -122,6 +122,39 @@ Base URL：`/api/StockApi`
 
 ---
 
+## 建立 Admin 帳號（開發種子或手動）
+
+- 方法 A（建議，開發種子）：啟動 `WebApplication1`（Development），應用會以種子（seed）方式建立帳號 `admin@test.com` 並賦予 `Admin` 角色，僅供本地開發測試。
+- 方法 B（手動建立）：若不使用種子，可手動產生 ASP.NET Identity 密碼雜湊，並將使用者與 `Admin` 角色匯入資料庫。
+
+  1. 產生 ASP.NET Identity 的密碼雜湊（範例 C#）：
+
+```csharp
+using Microsoft.AspNetCore.Identity;
+
+var user = new IdentityUser { UserName = "admin@test.com", Email = "admin@test.com" };
+var hasher = new PasswordHasher<IdentityUser>();
+Console.WriteLine(hasher.HashPassword(user, "admin123"));
+```
+
+  此程式可放入小型 console 專案或使用 dotnet-script 執行，會輸出 `<PASSWORD_HASH>`。
+
+  2. 將使用者與角色寫入資料庫（範例 SQL，請依實際 schema 調整）：
+
+```sql
+INSERT INTO AspNetUsers (Id, UserName, NormalizedUserName, Email, NormalizedEmail, EmailConfirmed, PasswordHash, SecurityStamp)
+VALUES ('<GUID>', 'admin@test.com', 'ADMIN@TEST.COM', 'admin@test.com', 'ADMIN@TEST.COM', 1, '<PASSWORD_HASH>', NEWID());
+
+INSERT INTO AspNetRoles (Id, Name, NormalizedName)
+VALUES ('<ROLE_GUID>', 'Admin', 'ADMIN');
+
+INSERT INTO AspNetUserRoles (UserId, RoleId)
+VALUES ('<GUID>', '<ROLE_GUID>');
+```
+
+  注意：直接操作資料表有風險，請先備份；生產環境建議使用管理介面或正式腳本建立並設定強密碼。
+
+
 ## 未來功能
 
 - API擴充：新增更多查詢條件、資料分析功能
