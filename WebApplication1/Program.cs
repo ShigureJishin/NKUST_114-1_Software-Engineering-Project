@@ -34,6 +34,32 @@ namespace WebApplication1
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                    var logger = services.GetService<ILogger<Program>>();
+
+                    const string roleName = "Admin";
+
+                    // 1. 建立 Admin 角色（若不存在）
+                    var roleExists = roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult();
+                    if (!roleExists)
+                    {
+                        var roleResult = roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+                        if (!roleResult.Succeeded)
+                        {
+                            logger?.LogWarning("Failed to create role '{role}': {errors}", roleName, string.Join(';', roleResult.Errors.Select(e => e.Description)));
+                        }
+                    }
+
+                    // 2. 取得或建立 Admin 使用者
+                    // 若需使用應在此加上程式碼
+
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
